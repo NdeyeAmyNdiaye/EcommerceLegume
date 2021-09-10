@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon panier!{% endblock %}
+
+{% block content %}
+<div class="mon-panier">
+    <h1>Mon panier</h1>
+    <p> Retrouver l'ensemble des produits que vous avez choisi.</p>
+    {% if cart|length > 0 %}
+   <div class="row">
+   <div class="col-md-9 ">
+    <table class="table mb-5">
+  <thead>
+    <tr>  
+      <th scope="col">Mes produits</th>
+      <th scope="col"></th>
+      <th scope="col">Quantité</th>
+      <th scope="col">Prix</th>
+      <th scope="col">Total</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+   {% set total = null  %}
+  {% for product in cart %}
+    <tr>
+      <th><img class=" img-cart" height="75px" src="/uploads/{{ product.product.illustration}}" alt="image illustration du produit">
+    </th>
+      <td>{{product.product.name}}</br>
+       <small>{{product.product.subtitle}}</small>
+       </td>
+      <td>
+      <a href="{{path('decrease_to_cart',{'id': product.product.id }) }}">
+      <img class=" img-moins mr-2" height="10px" src="{{ asset('assets/img/moins.png')}}" alt="diminuer ma quantité de produit">
+        </a>
+      {{product.quantity}}
+      <a href="{{path('add_to_cart',{'id': product.product.id }) }}">
+      <img class=" img-plus ml-2" height="10px" src="{{ asset('assets/img/add.png')}}" alt="Supprimer mon produit"></a>
+        </td>
+      <td>{{ (product.product.price /100)|number_format(2) }} €</td>
+      <td>{{ ((product.product.price * product.quantity)/100)|number_format(2) }} €</td>
+      <td>
+      <a href="{{path('delete_to_cart', {'id' : product.product.id})}}">
+      <img class=" img-remove" height="18px" src="{{ asset('assets/img/delete.png')}}" alt="Supprimer mon produit"></td>
+        </a>
+  </tr>
+    {% set total = total + product.product.price * product.quantity %}
+    {% endfor %}
+  </tbody>
+ 
+</table>
+</div>
+
+<div class="col-md-3">
+ <div>
+ <h5><b>Récapitulatif</b></h5>
+</div>
+ <hr>
+ <div class="row mb-3">
+         <div class="col-8" style="padding-left:5;">Nombre de produits</div>
+         <div class="col-4 text-right"> {{cart|length}}</div>
+ </div>
+ <div class="row mb-3">
+         <div class="col-8" style="padding-left:5;">Livraison standard</div>
+         <div class="col-4 text-right"> 5€</div>
+ </div>
+<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+     <div class="col-8">Prix total</div>
+    <div class="col-4 text-right">&euro; {{ (total /100)+5|number_format(2) }}</div>
+</div> <button class="btn-block btn btn-primary">Valider le panier</button>
+</div>
+
+</div>
+</div>
+{% else %}
+<hr>
+<p><b> Votre panier est vide </p>
+ {% endif %}
+{% endblock %}
